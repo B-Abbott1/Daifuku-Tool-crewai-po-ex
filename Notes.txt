@@ -1,2 +1,0 @@
-Remove 2 agents, normalizer and anomaly dectection, I like where the first two models are, 
-then I can just focus on how the last agent works
