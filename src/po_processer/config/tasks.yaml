@@ -1,0 +1,62 @@
+extract_po_line_items_task:
+  description: >
+    Here is the raw text extracted from a purchase order file:
+ 
+    ---BEGIN PO TEXT---
+    {raw_po_text}
+    ---END PO TEXT---
+ 
+    Extract every line item from the PO text above into the line_items array.
+    Use ONLY data from the text above — do not invent or assume any values.
+ 
+    For each line item extract:
+      - line_number: sequential integer starting at 1
+      - part_number: the item number / SKU, or null if not present
+      - description: the item description
+      - quantity: number only as an integer or float, or null.
+      - unit_of_measure: the unit if present, otherwise null
+      - unit_price: float, no currency symbols or commas (e.g. "$1,200.00" → 1200.00), or null
+      - total_price: float, same rules as unit_price, or null
+      - supplier_part_number: null if not distinct from part_number
+      - notes: any extra comments, shortages, or flags — otherwise null
+ 
+    Also extract the PO header:
+      - po_number: PO number string, or null
+      - po_date: date as found in the text, or null
+      - supplier_name: vendor name only, no label prefixes like "Vendor:" or "VENDOR"
+      - buyer_name: ship-to name if present, otherwise null
+      - delivery_date: required delivery date if present, otherwise null
+ 
+    RULES:
+      - Return ONLY a valid JSON object. No markdown, no explanation, no extra text.
+      - All arrays end with ]. All objects end with }. Never swap ] and }.
+      - quantity, unit_price, and total_price must always be numbers or null — never strings.
+ 
+    Output this exact structure populated with data from the PO text:
+    {
+      "header": {
+        "po_number": null,
+        "po_date": null,
+        "supplier_name": null,
+        "buyer_name": null,
+        "delivery_date": null
+      },
+      "line_items": [
+        {
+          "line_number": 1,
+          "part_number": null,
+          "description": null,
+          "quantity": null,
+          "unit_of_measure": null,
+          "unit_price": null,
+          "total_price": null,
+          "supplier_part_number": null,
+          "notes": null
+        }
+      ]
+    }
+  expected_output: >
+    A valid JSON object with exactly two top-level keys: "header" and "line_items".
+    No markdown, no explanation — the raw JSON object and nothing else.
+  agent: po_extraction_expert
+
