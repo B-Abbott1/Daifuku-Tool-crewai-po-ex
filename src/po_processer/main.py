@@ -1,12 +1,11 @@
 #!/usr/bin/env python
-import sys
-import warnings
 import json
 import os
-
+import sys
+import warnings
 from pathlib import Path
 
-from po_processer.crew import PoProcesser
+from po_processer.pipeline import PoProcesser
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
@@ -21,17 +20,14 @@ def resolve_file_path(file_path: str) -> str:
 
 
 def derive_output_path(file_path: str) -> str:
-    """Derive the Excel output filename from the input filename.
-    e.g. 'C:/Users/bradk/po_processer/acme_po.pdf' -> 'acme_po.xlsx'
-    Output is written to the same directory as the input file.
-    """
+    """Derive the Excel output filename from the input filename."""
     p = Path(file_path)
     return str(p.parent / (p.stem + ".xlsx"))
 
 
 def prompt_for_file() -> str:
     print("\n" + "=" * 52)
-    print("   PO Processor -- Spare Parts Purchase Order Crew")
+    print("   PO Processor -- Spare Parts Purchase Order")
     print("=" * 52)
     while True:
         file_path = input("\nEnter path to PO file (PDF, Excel, or text):\n> ").strip().strip('"')
@@ -77,15 +73,6 @@ def train():
     raise Exception("Train mode not supported in this workflow.")
 
 
-def replay():
-    if len(sys.argv) < 2:
-        raise Exception("Usage: python main.py replay <task_id>")
-    try:
-        PoProcesser().crew().replay(task_id=sys.argv[1])
-    except Exception as e:
-        raise Exception(f"An error occurred while replaying: {e}")
-
-
 def run_with_trigger():
     if len(sys.argv) < 2:
         raise Exception("Usage: python main.py trigger '<json_payload>'")
@@ -107,9 +94,8 @@ def run_with_trigger():
 
 
 COMMANDS = {
-    "run":     run,
-    "train":   train,
-    "replay":  replay,
+    "run": run,
+    "train": train,
     "trigger": run_with_trigger,
 }
 
